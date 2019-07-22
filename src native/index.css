@@ -1,0 +1,152 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #cdcdcd;
+}
+
+/* 最外层container */
+header,
+.main-list-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 二级container */
+.header-form,
+.main-list {
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 700px;
+  /* min-width: 360px; */
+}
+
+/* 头部 */
+header {
+  background-color: black;
+  color: white;
+  flex-flow: row;
+  height: 50px;
+}
+
+form {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
+form label {
+  font-size: 28px;
+}
+
+form input {
+  margin-left: auto;
+  width: 50%;
+  height: 25px;
+  border-radius: 3px;
+}
+
+/* 头部 */
+
+/* 列表 */
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.listcount {
+  background-color: #fff;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25px;
+  width: 25px;
+  font-size: 16px;
+  font-weight: normal;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  height: 32px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
+  padding: 3px;
+  padding-left: 15px;
+
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+
+}
+
+.todolist {
+  background-color: #fff;
+
+  border-left: 8px solid yellowgreen;
+  cursor: move;
+
+}
+
+.donelist {
+  background-color: #e6e6e6;
+  border-left: 8px solid #b3b3b3;
+}
+
+li input {
+  margin-right: 15px;
+}
+
+li span {
+  line-height: 32px;
+}
+
+li a {
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  width: 28px;
+  height: 24px;
+  line-height: 10px;
+
+  border-radius: 14px;
+  border: 6px double #FFF;
+  background: #CCC;
+  text-align: center;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+
+  margin-left: auto;
+}
+
+/* 底部 */
+
+footer {
+  color: #666666;
+  display: flex;
+  justify-content: center;
+  height: 40px;
+  margin-top: 20px;
+}
+
+footer span a {
+  text-decoration: none;
+  margin-left: 10px;
+  color: #999999;
+  cursor: pointer;
+}
