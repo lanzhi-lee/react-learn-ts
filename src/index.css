@@ -8,145 +8,161 @@ body {
   background-color: #cdcdcd;
 }
 
+html,
+body,
+#root,
+.app {
+  height: 100%;
+}
+
+.index,
+.about {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 /* 最外层container */
-header,
-.main-list-container {
+.header,
+.index__main,
+.footer {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 二级container */
-.header-form,
-.main-list {
-  margin-left: 20px;
-  margin-right: 20px;
-  width: 700px;
-  /* min-width: 360px; */
-}
-
 /* 头部 */
-header {
+.header {
   background-color: black;
   color: white;
   flex-flow: row;
   height: 50px;
 }
 
-form {
+.header__navbar {
   display: flex;
-  flex-flow: row;
-  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  list-style: none;
+  width: 60%;
 }
 
-form label {
-  font-size: 28px;
+.header__navbar-item a {
+  width: 100px;
+  height: 50px;
+  padding: 10px;
+
+  text-decoration: none;
+  color: white;
+
+  transition: 0.5s;
 }
 
-form input {
-  margin-left: auto;
-  width: 50%;
-  height: 25px;
-  border-radius: 3px;
+.header__navbar-item a:hover {
+  color: black;
+  background-color: white;
+  /* border-bottom: 3px solid #cdcdcd; */
 }
 
 /* 头部 */
 
-/* 列表 */
-
-h2 {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-}
-
-.listcount {
-  background-color: #fff;
-  margin-left: auto;
+.index__main {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 25px;
-  width: 25px;
-  font-size: 16px;
-  font-weight: normal;
-  border-radius: 50%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  align-items: flex-start;
+  height: 300px;
 }
 
-ul {
+.index__main-left,
+.index__main-right {
+  height: 300px;
+}
+
+/* 左侧 */
+.index__main-left {
+  width: 100px;
+}
+
+.index__main-left ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  list-style: none;
+
+  height: 80px;
+  background-color: white;
+  border-radius: 5px;
+
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
+}
+
+.index__main-left ul li:first-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.index__main-left ul a {
+  height: 40px;
+  padding: 5px;
+}
+
+/* 左侧 */
+
+/* 右侧 */
+.index__main-right {
+  width: 30%;
+  min-width: 300px;
+  margin-left: 10px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: white;
+
+  border-radius: 5px;
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
+}
+
+/* 右侧上部 */
+.index__main-right-bottom {
+  margin-bottom: 20px;
+}
+
+.index__main-right-top ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   list-style: none;
 }
 
-li {
-  height: 32px;
-  margin-bottom: 10px;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
-  padding: 3px;
-  padding-left: 15px;
+.index__main-right-top ul a {
+  width: 100px;
+  height: 40px;
+  margin: 10px;
+  padding: 5px;
 
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
-.todolist {
-  background-color: #fff;
+/* 右侧下部 */
 
-  border-left: 8px solid yellowgreen;
-  cursor: move;
-
-}
-
-.donelist {
-  background-color: #e6e6e6;
-  border-left: 8px solid #b3b3b3;
-}
-
-li input {
-  margin-right: 15px;
-}
-
-li span {
-  line-height: 32px;
-}
-
-li a {
-  text-decoration: none;
-  display: inline-block;
-  text-align: center;
-  width: 28px;
-  height: 24px;
-  line-height: 10px;
-
-  border-radius: 14px;
-  border: 6px double #FFF;
-  background: #CCC;
-  text-align: center;
-  color: #FFF;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-
-  margin-left: auto;
-}
 
 /* 底部 */
 
-footer {
+.footer {
   color: #666666;
-  display: flex;
-  justify-content: center;
   height: 40px;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-footer span a {
+/* 全部的样式清除 */
+a {
   text-decoration: none;
-  margin-left: 10px;
-  color: #999999;
-  cursor: pointer;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
