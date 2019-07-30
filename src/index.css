@@ -8,161 +8,145 @@ body {
   background-color: #cdcdcd;
 }
 
-html,
-body,
-#root,
-.app {
-  height: 100%;
-}
-
-.index,
-.about {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 /* 最外层container */
-.header,
-.index__main,
-.footer {
+header,
+.main-list-container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* 二级container */
+.header-form,
+.main-list {
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 700px;
+  /* min-width: 360px; */
+}
+
 /* 头部 */
-.header {
+header {
   background-color: black;
   color: white;
   flex-flow: row;
   height: 50px;
 }
 
-.header__navbar {
+form {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  list-style: none;
-  width: 60%;
+  flex-flow: row;
+  align-items: center;
 }
 
-.header__navbar-item a {
-  width: 100px;
-  height: 50px;
-  padding: 10px;
-
-  text-decoration: none;
-  color: white;
-
-  transition: 0.5s;
+form label {
+  font-size: 28px;
 }
 
-.header__navbar-item a:hover {
-  color: black;
-  background-color: white;
-  /* border-bottom: 3px solid #cdcdcd; */
+form input {
+  margin-left: auto;
+  width: 50%;
+  height: 25px;
+  border-radius: 3px;
 }
 
 /* 头部 */
 
-.index__main {
+/* 列表 */
+
+h2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.listcount {
+  background-color: #fff;
+  margin-left: auto;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  height: 300px;
+  align-items: center;
+  height: 25px;
+  width: 25px;
+  font-size: 16px;
+  font-weight: normal;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.index__main-left,
-.index__main-right {
-  height: 300px;
-}
-
-/* 左侧 */
-.index__main-left {
-  width: 100px;
-}
-
-.index__main-left ul {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+ul {
   list-style: none;
-
-  height: 80px;
-  background-color: white;
-  border-radius: 5px;
-
-  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
 }
 
-.index__main-left ul li:first-child {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.index__main-left ul a {
-  height: 40px;
-  padding: 5px;
-}
-
-/* 左侧 */
-
-/* 右侧 */
-.index__main-right {
-  width: 30%;
-  min-width: 300px;
-  margin-left: 10px;
-  padding: 20px;
+li {
+  height: 32px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
+  padding: 3px;
+  padding-left: 15px;
 
   display: flex;
-  flex-direction: column;
+  flex-flow: row;
   align-items: center;
 
-  background-color: white;
-
-  border-radius: 5px;
-  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
 }
 
-/* 右侧上部 */
-.index__main-right-bottom {
-  margin-bottom: 20px;
+.todolist {
+  background-color: #fff;
+
+  border-left: 8px solid yellowgreen;
+  cursor: move;
+
 }
 
-.index__main-right-top ul {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  list-style: none;
+.donelist {
+  background-color: #e6e6e6;
+  border-left: 8px solid #b3b3b3;
 }
 
-.index__main-right-top ul a {
-  width: 100px;
-  height: 40px;
-  margin: 10px;
-  padding: 5px;
-
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+li input {
+  margin-right: 15px;
 }
 
-/* 右侧下部 */
+li span {
+  line-height: 32px;
+}
 
+li a {
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  width: 28px;
+  height: 24px;
+  line-height: 10px;
+
+  border-radius: 14px;
+  border: 6px double #FFF;
+  background: #CCC;
+  text-align: center;
+  color: #FFF;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+
+  margin-left: auto;
+}
 
 /* 底部 */
 
-.footer {
+footer {
   color: #666666;
-  height: 40px;
-  margin-bottom: 20px;
-}
-
-/* 全部的样式清除 */
-a {
-  text-decoration: none;
-  color: black;
   display: flex;
   justify-content: center;
-  align-items: center;
+  height: 40px;
+  margin-top: 20px;
+}
+
+footer span a {
+  text-decoration: none;
+  margin-left: 10px;
+  color: #999999;
+  cursor: pointer;
 }

@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #cdcdcd;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+}
+
+.index,
+.about {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 最外层container */
+.header,
+.index__main,
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 头部 */
+.header {
+  background-color: black;
+  color: white;
+  flex-flow: row;
+  height: 50px;
+}
+
+.header__navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  list-style: none;
+  width: 60%;
+}
+
+.header__navbar-item a {
+  width: 100px;
+  height: 50px;
+  padding: 10px;
+
+  text-decoration: none;
+  color: white;
+
+  transition: 0.5s;
+}
+
+.header__navbar-item a:hover {
+  color: black;
+  background-color: white;
+  /* border-bottom: 3px solid #cdcdcd; */
+}
+
+/* 头部 */
+
+.index__main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 300px;
+}
+
+.index__main-left,
+.index__main-right {
+  height: 300px;
+}
+
+/* 左侧 */
+.index__main-left {
+  width: 100px;
+}
+
+.index__main-left ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  list-style: none;
+
+  height: 80px;
+  background-color: white;
+  border-radius: 5px;
+
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
+}
+
+.index__main-left ul li:first-child {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.index__main-left ul a {
+  height: 40px;
+  padding: 5px;
+}
+
+/* 左侧 */
+
+/* 右侧 */
+.index__main-right {
+  width: 30%;
+  min-width: 300px;
+  margin-left: 10px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: white;
+
+  border-radius: 5px;
+  box-shadow: 1px 1px rgba(0, 0, 0, 0.1)
+}
+
+/* 右侧上部 */
+.index__main-right-bottom {
+  margin-bottom: 20px;
+}
+
+.index__main-right-top ul {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  list-style: none;
+}
+
+.index__main-right-top ul a {
+  width: 100px;
+  height: 40px;
+  margin: 10px;
+  padding: 5px;
+
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+/* 右侧下部 */
+
+
+/* 底部 */
+
+.footer {
+  color: #666666;
+  height: 40px;
+  margin-bottom: 20px;
+}
+
+/* 全部的样式清除 */
+a {
+  text-decoration: none;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
