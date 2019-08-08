@@ -1,3 +1,1 @@
-src native下是完全采用原生的 this.setState 进行状态控制的版本
-采用props由父组件与子组件传值
-无路由配置
+# 尝试引入redux

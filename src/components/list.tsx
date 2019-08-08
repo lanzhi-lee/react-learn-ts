@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent, FocusEvent, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent } from 'react'
 
 interface IProps {
     todolist: Array<string>,
@@ -6,102 +6,116 @@ interface IProps {
     addItemToDone: (item: string) => void,
     reAddItemToTodo: (item: string) => void,
     delItemFromTodo: (index: number) => void,
-    delItemFromDone: (index: number) => void
+    delItemFromDone: (index: number) => void,
+    updateTodo: (arr: string[]) => void,
+    initTodoFlags: (arr: boolean[]) => void,
+    updateTodoFlags: (arr: boolean[]) => void,
+    todoFlags: boolean[],
+    initTodo: (list: string[]) => void,
+    initDone: (list: string[]) => void,
 }
 
 interface IState {
-    todoFlags: Array<boolean>
     todoItemValue: string
 }
 
 export default class List extends Component<IProps, IState> {
     public state: IState = {
-        todoFlags: [],
         todoItemValue: ''
     }
 
-    handleTodoDel = (event: MouseEvent<HTMLAnchorElement>) => {
+    handleTodoDel = (index: number) => {
         // 此处不可以使用event.target，会报错 EventTarget上没有className
-        this.props.delItemFromTodo(+event.currentTarget.className)
+        this.props.delItemFromTodo(index)
     }
 
-    handleDoneDel = (event: MouseEvent<HTMLAnchorElement>) => {
-        this.props.delItemFromDone(+event.currentTarget.className)
+    handleDoneDel = (index: number) => {
+        this.props.delItemFromDone(index)
     }
 
-    handleTodoChange = (event: MouseEvent<HTMLInputElement>) => {
-        // 找到元素的索引
-        let index = +event.currentTarget.className
+    handleTodoChange = (index: number) => {
         // 添加至donelist
         this.props.addItemToDone(this.props.todolist[index])
         // 从todolist中删除
         this.props.delItemFromTodo(index)
     }
 
-    handleDoneChange = (event: MouseEvent<HTMLInputElement>) => {
-        let index = +event.currentTarget.className
+    handleDoneChange = (index: number) => {
         this.props.reAddItemToTodo(this.props.donelist[index])
         this.props.delItemFromDone(index)
     }
 
-    handleTodoContentClick = (event: MouseEvent<HTMLSpanElement>) => {
-        // 取到对应的index
-        let index = +event.currentTarget.className
+    handleTodoContentClick = (index: number) => {
         // 显示为input
         this.toggleShowSpanAndInput(index)
-
+        // 更新input的内容
         this.setState({ todoItemValue: this.props.todolist[index] })
     }
 
-    handleTodoContentBlur = (event: FocusEvent<HTMLInputElement>) => {
-        // 取到对应的index
-        let index = +event.currentTarget.className
+    handleTodoContentBlur = (index: number) => {
+        let { todolist, updateTodo } = this.props
+
         this.toggleShowSpanAndInput(index)
 
-        this.props.todolist[index] = this.state.todoItemValue
-        /**
-         * 这里修改props.todolist的值，本以为无法直接修改，要通过父组件的函数来修改。
-         * 后来发现，this.props是只读的，但是数组内部的元素是可以修改的
-         */
+        // 未变化就不触发action
+        if (todolist[index] === this.state.todoItemValue) return
+
+        todolist[index] = this.state.todoItemValue
+        updateTodo([...todolist])
+
+        // let temp1 = todolist.filter((item, item_index) => item_index < index)
+        // let temp2 = todolist.filter((item, item_index) => item_index > index)
+        // let list = [...temp1, this.state.todoItemValue, ...temp2]
+
+        // updateTodo(list)
     }
 
     // 抽取 handleTodoContentClick 和 handleTodoContentBlur 的公共部分进行封装
     toggleShowSpanAndInput = (index: number) => {
-        let { todoFlags } = this.state
+        let { todoFlags, updateTodoFlags } = this.props
         todoFlags[index] = !todoFlags[index]
-        this.setState({ todoFlags })
+        updateTodoFlags([...todoFlags])
+
+        // let temp1 = todoFlags.filter((item, item_index) => item_index < index)
+        // let temp2 = todoFlags.filter((item, item_index) => item_index > index)
+        // let list = [...temp1, !todoFlags[index], ...temp2]
+
+        // updateTodoFlags(list)
     }
 
     handleTodoContentInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         this.setState({ todoItemValue: event.currentTarget.value })
     }
 
-    componentWillMount() {
-        // 在此将list初始化显示为span
-        let todoFlags = []
-        for (let i = 0; i < this.props.todolist.length; i++) {
-            todoFlags.push(true)
+    // componentWillMount() {
+    componentDidMount() {
+
+        let { initTodo, initDone } = this.props
+
+        try {
+            let todolist: string[] = JSON.parse(String(localStorage.getItem('todolist'))) || []
+            let donelist: string[] = JSON.parse(String(localStorage.getItem('donelist'))) || []
+
+            console.warn(todolist)
+
+            // 在此将list初始化显示为span
+            // let todoFlags = new Array(this.props.todolist.length).fill(true)
+            let todoFlags = new Array(todolist.length).fill(true)
+            this.props.initTodoFlags(todoFlags)
+
+            initTodo(todolist)
+            initDone(donelist)
+
+        } catch (error) {
+            console.log(error)
         }
-        this.setState({ todoFlags })
-    }
+        console.log('list mounted')
 
-    componentWillUpdate() {
-        let todoFlags = this.state.todoFlags
-        let todoFlagsLength = todoFlags.length
-        let todolistLength = this.props.todolist.length
-
-        if (todoFlagsLength < todolistLength) {
-            for (let i = 0; i < todolistLength - todoFlagsLength; i++) {
-                todoFlags.push(true)
-            }
-            // eslint-disable-next-line
-        } else this.state.todoFlags = todoFlags.slice(0, todolistLength)
-        // 在此处直接操作了state，同时页面也发生了变化
-        // 猜测是因为当前的生命周期函数在执行后，刚好会执行render，因此直接操作的state也会对应的反映到页面上
     }
 
     render() {
         let { todolist, donelist } = this.props
+        console.log(todolist, donelist)
         return (
             <section className="main-list-container">
                 <section className="main-list">
@@ -111,20 +125,20 @@ export default class List extends Component<IProps, IState> {
                             todolist.map((item, index) =>
                                 (
                                     <li className="todolist" key={index} draggable={true}>
-                                        <input type="checkbox" className={String(index)} checked={false} readOnly onClick={this.handleTodoChange} />
+                                        <input type="checkbox" checked={false} readOnly onClick={() => this.handleTodoChange(index)} />
                                         {
-                                            this.state.todoFlags[index] ?
-                                                <span className={String(index)} onClick={this.handleTodoContentClick}>{item}</span>
+                                            this.props.todoFlags[index] ?
+                                                <span style={{ width: '400px' }} onClick={() => this.handleTodoContentClick(index)}>{item}</span>
                                                 :
-                                                <input type="text" className={String(index)} style={{ width: '400px' }}
+                                                <input type="text" style={{ width: '400px' }}
                                                     autoFocus={true}
                                                     value={this.state.todoItemValue}
                                                     onChange={this.handleTodoContentInputChange}
-                                                    onBlur={this.handleTodoContentBlur}
+                                                    onBlur={() => this.handleTodoContentBlur(index)}
                                                 />
                                         }
                                         {/* eslint-disable-next-line */}
-                                        <a className={String(index)} onClick={this.handleTodoDel}>-</a>
+                                        <a onClick={() => this.handleTodoDel(index)}>-</a>
                                     </li>
                                 )
                             )
@@ -137,10 +151,10 @@ export default class List extends Component<IProps, IState> {
                             donelist.map((item, index) =>
                                 (
                                     <li className="donelist" key={index}>
-                                        <input type="checkbox" className={String(index)} checked={true} readOnly onClick={this.handleDoneChange} />
+                                        <input type="checkbox" checked={true} readOnly onClick={() => this.handleDoneChange(index)} />
                                         <span>{item}</span>
                                         {/* eslint-disable-next-line */}
-                                        <a className={String(index)} onClick={this.handleDoneDel}>-</a>
+                                        <a onClick={() => this.handleDoneDel(index)}>-</a>
                                     </li>
                                 )
                             )
