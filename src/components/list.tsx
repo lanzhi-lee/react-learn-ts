@@ -1,4 +1,6 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
+import { Context, TYPES } from '../hooks'
+import IContext from '../types/IContext'
 
 interface IProps {
     todolist: Array<string>,
@@ -15,153 +17,159 @@ interface IProps {
     initDone: (list: string[]) => void,
 }
 
-interface IState {
-    todoItemValue: string
-}
+const List: React.FC = props => {
 
-export default class List extends Component<IProps, IState> {
-    public state: IState = {
-        todoItemValue: ''
-    }
+    const [todoItemValue, setTodoItemValue] = useState('')
 
-    handleTodoDel = (index: number) => {
+    const { data: contextData, dispatch: contextDispatch } = useContext(Context) as IContext
+    const { todolist, donelist, todoFlags } = contextData
+    const { dispatchTodolist, dispatchDonelist, dispatchTodoFlags } = contextDispatch
+
+    const handleTodoDel = (index: number) => {
         // 此处不可以使用event.target，会报错 EventTarget上没有className
-        this.props.delItemFromTodo(index)
+        dispatchTodolist({ type: TYPES.DEL_ITEM_FROM_TODO, data: index })
+
+        // 同时更新flags
+        let currentFlags = [...todoFlags]
+        currentFlags.pop()
+        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
     }
 
-    handleDoneDel = (index: number) => {
-        this.props.delItemFromDone(index)
+    const handleDoneDel = (index: number) => {
+        dispatchDonelist({ type: TYPES.DEL_ITEM_FROM_DONE, data: index })
     }
 
-    handleTodoChange = (index: number) => {
+    const handleTodoChange = (index: number) => {
         // 添加至donelist
-        this.props.addItemToDone(this.props.todolist[index])
+        let currentItem = todolist[index]
+        dispatchDonelist({ type: TYPES.ADD_ITEM_TO_DONE, data: currentItem })
+
         // 从todolist中删除
-        this.props.delItemFromTodo(index)
+        dispatchTodolist({ type: TYPES.DEL_ITEM_FROM_TODO, data: index })
+
+        // 同时更新flags
+        let currentFlags = [...todoFlags]
+        currentFlags.pop()
+        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
     }
 
-    handleDoneChange = (index: number) => {
-        this.props.reAddItemToTodo(this.props.donelist[index])
-        this.props.delItemFromDone(index)
+    const handleDoneChange = (index: number) => {
+        // 从done中删除之前要更新 todoflags，保证todo和todoflags的长度一致，否则会出现异常
+        let currentFlags = [...todoFlags, true]
+        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
+
+        let currentItem = donelist[index]
+        dispatchTodolist({ type: TYPES.ADD_ITEM_TO_TODO_FROM_DONE, data: currentItem })
+        dispatchDonelist({ type: TYPES.DEL_ITEM_FROM_DONE, data: index })
     }
 
-    handleTodoContentClick = (index: number) => {
+    const handleTodoContentClick = (index: number) => {
         // 显示为input
-        this.toggleShowSpanAndInput(index)
+        toggleShowSpanAndInput(index)
         // 更新input的内容
-        this.setState({ todoItemValue: this.props.todolist[index] })
+        setTodoItemValue(todolist[index])
     }
 
-    handleTodoContentBlur = (index: number) => {
-        let { todolist, updateTodo } = this.props
-
-        this.toggleShowSpanAndInput(index)
+    const handleTodoContentBlur = (index: number) => {
+        toggleShowSpanAndInput(index)
 
         // 未变化就不触发action
-        if (todolist[index] === this.state.todoItemValue) return
+        if (todolist[index] === todoItemValue) return
 
-        todolist[index] = this.state.todoItemValue
-        updateTodo([...todolist])
-
-        // let temp1 = todolist.filter((item, item_index) => item_index < index)
-        // let temp2 = todolist.filter((item, item_index) => item_index > index)
-        // let list = [...temp1, this.state.todoItemValue, ...temp2]
-
-        // updateTodo(list)
+        let currentArr = [...todolist]
+        currentArr[index] = todoItemValue
+        dispatchTodolist({ type: TYPES.UPDATE_TODO, data: currentArr })
     }
 
     // 抽取 handleTodoContentClick 和 handleTodoContentBlur 的公共部分进行封装
-    toggleShowSpanAndInput = (index: number) => {
-        let { todoFlags, updateTodoFlags } = this.props
-        todoFlags[index] = !todoFlags[index]
-        updateTodoFlags([...todoFlags])
-
-        // let temp1 = todoFlags.filter((item, item_index) => item_index < index)
-        // let temp2 = todoFlags.filter((item, item_index) => item_index > index)
-        // let list = [...temp1, !todoFlags[index], ...temp2]
-
-        // updateTodoFlags(list)
+    const toggleShowSpanAndInput = (index: number) => {
+        let currentArr = [...todoFlags]
+        currentArr[index] = !currentArr[index]
+        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentArr })
     }
 
-    handleTodoContentInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        this.setState({ todoItemValue: event.currentTarget.value })
+    const handleTodoContentInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setTodoItemValue(event.currentTarget.value)
     }
 
-    // componentWillMount() {
-    componentDidMount() {
-
-        let { initTodo, initDone } = this.props
-
+    // 初始化显示
+    useEffect(() => {
         try {
-            let todolist: string[] = JSON.parse(String(localStorage.getItem('todolist'))) || []
-            let donelist: string[] = JSON.parse(String(localStorage.getItem('donelist'))) || []
-
-            console.warn(todolist)
+            let localTodolist: string[] = JSON.parse(String(localStorage.getItem('todolist'))) || []
+            let localDonelist: string[] = JSON.parse(String(localStorage.getItem('donelist'))) || []
 
             // 在此将list初始化显示为span
-            // let todoFlags = new Array(this.props.todolist.length).fill(true)
-            let todoFlags = new Array(todolist.length).fill(true)
-            this.props.initTodoFlags(todoFlags)
+            let initTodoFlags = new Array(localTodolist.length).fill(true)
 
-            initTodo(todolist)
-            initDone(donelist)
+            dispatchTodoFlags({ type: TYPES.INIT_TODO_FLAGS, data: initTodoFlags })
+            dispatchTodolist({ type: TYPES.INIT_TODO, data: localTodolist })
+            dispatchDonelist({ type: TYPES.INIT_DONE, data: localDonelist })
 
         } catch (error) {
             console.log(error)
         }
         console.log('list mounted')
+    },
+        // eslint-disable-next-line
+        [])
 
-    }
+    // 完成更新后设置缓存
+    useEffect(() => {
+        localStorage.setItem('todolist', JSON.stringify(todolist))
+        localStorage.setItem('donelist', JSON.stringify(donelist))
+    })
 
-    render() {
-        let { todolist, donelist } = this.props
-        console.log(todolist, donelist)
-        return (
-            <section className="main-list-container">
-                <section className="main-list">
-                    <h2>正在进行<span className="listcount">{todolist.length}</span></h2>
-                    <ul>
-                        {
-                            todolist.map((item, index) =>
-                                (
-                                    <li className="todolist" key={index} draggable={true}>
-                                        <input type="checkbox" checked={false} readOnly onClick={() => this.handleTodoChange(index)} />
-                                        {
-                                            this.props.todoFlags[index] ?
-                                                <span style={{ width: '400px' }} onClick={() => this.handleTodoContentClick(index)}>{item}</span>
-                                                :
-                                                <input type="text" style={{ width: '400px' }}
-                                                    autoFocus={true}
-                                                    value={this.state.todoItemValue}
-                                                    onChange={this.handleTodoContentInputChange}
-                                                    onBlur={() => this.handleTodoContentBlur(index)}
-                                                />
-                                        }
-                                        {/* eslint-disable-next-line */}
-                                        <a onClick={() => this.handleTodoDel(index)}>-</a>
-                                    </li>
-                                )
+    useEffect(() => {
+        console.log('todolist.length :', todolist.length)
+    }, [todolist.length])
+
+    return (
+        <section className="main-list-container">
+            <section className="main-list">
+                <h2>正在进行<span className="listcount">{todolist.length}</span></h2>
+                <ul>
+                    {
+                        todolist.map((item: string, index: number) =>
+                            (
+                                <li className="todolist" key={index} draggable={true}>
+                                    <input type="checkbox" checked={false} readOnly onClick={() => handleTodoChange(index)} />
+                                    {
+                                        todoFlags[index] ?
+                                            <span style={{ width: '400px' }} onClick={() => handleTodoContentClick(index)}>{item}</span>
+                                            :
+                                            <input type="text" style={{ width: '400px' }}
+                                                autoFocus={true}
+                                                value={todoItemValue}
+                                                onChange={handleTodoContentInputChange}
+                                                onBlur={() => handleTodoContentBlur(index)}
+                                            />
+                                    }
+                                    {/* eslint-disable-next-line */}
+                                    <a onClick={() => handleTodoDel(index)}>-</a>
+                                </li>
                             )
-                        }
-                    </ul>
+                        )
+                    }
+                </ul>
 
-                    <h2>已经完成<span className="listcount">{donelist.length}</span></h2>
-                    <ul>
-                        {
-                            donelist.map((item, index) =>
-                                (
-                                    <li className="donelist" key={index}>
-                                        <input type="checkbox" checked={true} readOnly onClick={() => this.handleDoneChange(index)} />
-                                        <span>{item}</span>
-                                        {/* eslint-disable-next-line */}
-                                        <a onClick={() => this.handleDoneDel(index)}>-</a>
-                                    </li>
-                                )
+                <h2>已经完成<span className="listcount">{donelist.length}</span></h2>
+                <ul>
+                    {
+                        donelist.map((item: string, index: number) =>
+                            (
+                                <li className="donelist" key={index}>
+                                    <input type="checkbox" checked={true} readOnly onClick={() => handleDoneChange(index)} />
+                                    <span>{item}</span>
+                                    {/* eslint-disable-next-line */}
+                                    <a onClick={() => handleDoneDel(index)}>-</a>
+                                </li>
                             )
-                        }
-                    </ul>
-                </section>
+                        )
+                    }
+                </ul>
             </section>
-        )
-    }
+        </section>
+    )
 }
+
+export default List
