@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useContext, ChangeEvent } from 'react'
-import { Context, TYPES } from '../hooks'
-import IContext from '../types/IContext'
+import React, { useState, useEffect, ChangeEvent } from 'react'
 
 interface IProps {
     todolist: Array<string>,
@@ -17,50 +15,53 @@ interface IProps {
     initDone: (list: string[]) => void,
 }
 
-const List: React.FC = props => {
+const List: React.FC<IProps> = props => {
 
     const [todoItemValue, setTodoItemValue] = useState('')
 
-    const { data: contextData, dispatch: contextDispatch } = useContext(Context) as IContext
-    const { todolist, donelist, todoFlags } = contextData
-    const { dispatchTodolist, dispatchDonelist, dispatchTodoFlags } = contextDispatch
+    const { todolist, donelist, todoFlags,
+        initTodo, initDone, initTodoFlags,
+        addItemToDone, reAddItemToTodo,
+        delItemFromTodo, delItemFromDone,
+        updateTodo, updateTodoFlags,
+    } = props
 
     const handleTodoDel = (index: number) => {
         // 此处不可以使用event.target，会报错 EventTarget上没有className
-        dispatchTodolist({ type: TYPES.DEL_ITEM_FROM_TODO, data: index })
+        delItemFromTodo(index)
 
         // 同时更新flags
         let currentFlags = [...todoFlags]
         currentFlags.pop()
-        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
+        updateTodoFlags(currentFlags)
     }
 
     const handleDoneDel = (index: number) => {
-        dispatchDonelist({ type: TYPES.DEL_ITEM_FROM_DONE, data: index })
+        delItemFromDone(index)
     }
 
     const handleTodoChange = (index: number) => {
         // 添加至donelist
         let currentItem = todolist[index]
-        dispatchDonelist({ type: TYPES.ADD_ITEM_TO_DONE, data: currentItem })
+        addItemToDone(currentItem)
 
         // 从todolist中删除
-        dispatchTodolist({ type: TYPES.DEL_ITEM_FROM_TODO, data: index })
+        delItemFromTodo(index)
 
         // 同时更新flags
         let currentFlags = [...todoFlags]
         currentFlags.pop()
-        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
+        updateTodoFlags(currentFlags)
     }
 
     const handleDoneChange = (index: number) => {
         // 从done中删除之前要更新 todoflags，保证todo和todoflags的长度一致，否则会出现异常
         let currentFlags = [...todoFlags, true]
-        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentFlags })
+        updateTodoFlags(currentFlags)
 
         let currentItem = donelist[index]
-        dispatchTodolist({ type: TYPES.ADD_ITEM_TO_TODO_FROM_DONE, data: currentItem })
-        dispatchDonelist({ type: TYPES.DEL_ITEM_FROM_DONE, data: index })
+        reAddItemToTodo(currentItem)
+        delItemFromDone(index)
     }
 
     const handleTodoContentClick = (index: number) => {
@@ -78,14 +79,14 @@ const List: React.FC = props => {
 
         let currentArr = [...todolist]
         currentArr[index] = todoItemValue
-        dispatchTodolist({ type: TYPES.UPDATE_TODO, data: currentArr })
+        updateTodo(currentArr)
     }
 
     // 抽取 handleTodoContentClick 和 handleTodoContentBlur 的公共部分进行封装
     const toggleShowSpanAndInput = (index: number) => {
-        let currentArr = [...todoFlags]
-        currentArr[index] = !currentArr[index]
-        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currentArr })
+        let currentFlags = [...todoFlags]
+        currentFlags[index] = !currentFlags[index]
+        updateTodoFlags(currentFlags)
     }
 
     const handleTodoContentInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -99,12 +100,11 @@ const List: React.FC = props => {
             let localDonelist: string[] = JSON.parse(String(localStorage.getItem('donelist'))) || []
 
             // 在此将list初始化显示为span
-            let initTodoFlags = new Array(localTodolist.length).fill(true)
+            let localTodoFlags: boolean[] = new Array(localTodolist.length).fill(true)
 
-            dispatchTodoFlags({ type: TYPES.INIT_TODO_FLAGS, data: initTodoFlags })
-            dispatchTodolist({ type: TYPES.INIT_TODO, data: localTodolist })
-            dispatchDonelist({ type: TYPES.INIT_DONE, data: localDonelist })
-
+            initTodoFlags(localTodoFlags)
+            initTodo(localTodolist)
+            initDone(localDonelist)
         } catch (error) {
             console.log(error)
         }

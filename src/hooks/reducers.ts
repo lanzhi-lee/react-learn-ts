@@ -1,6 +1,6 @@
 import TYPES from './types'
 
-function todolistReducer(state: string[], action: { type: any, data: any }) {
+function todolistReducer(state: string[], action: { type: TYPES, data: any }) {
     switch (action.type) {
         case TYPES.INIT_TODO: {
             console.log(TYPES.INIT_TODO)

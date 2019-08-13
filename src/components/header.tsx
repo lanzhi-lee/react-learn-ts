@@ -1,13 +1,15 @@
-import React, { useState, useContext, ChangeEvent, FormEvent } from 'react'
-import { Context, TYPES } from '../hooks'
-import IContext from '../types/IContext'
+import React, { useState, ChangeEvent, FormEvent } from 'react'
 
-const Header: React.FC = props => {
+interface IProps {
+    todoFlags: boolean[],
+    addItemToTodo: (item: string) => void,
+    updateTodoFlags: (arr: boolean[]) => void
+}
+
+const Header: React.FC<IProps> = props => {
+    const { todoFlags, addItemToTodo, updateTodoFlags } = props
+
     const [todoInput, setTodoInput] = useState('')
-
-    const { data: contextData, dispatch: contextDispatch } = useContext(Context) as IContext
-    const { todoFlags } = contextData
-    const { dispatchTodolist, dispatchTodoFlags } = contextDispatch
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setTodoInput(event.target.value)
@@ -22,9 +24,9 @@ const Header: React.FC = props => {
 
         // 更新todoflags
         let currnetFlags = [true, ...todoFlags]
-        dispatchTodoFlags({ type: TYPES.UPDATE_TODO_FLAGS, data: currnetFlags })
+        updateTodoFlags(currnetFlags)
         // 添加到todolist中
-        dispatchTodolist({ type: TYPES.ADD_ITEM_TO_TODO, data: item })
+        addItemToTodo(item)
 
         // 输入框置空
         setTodoInput('')

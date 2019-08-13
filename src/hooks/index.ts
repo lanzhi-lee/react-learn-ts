@@ -4,6 +4,13 @@ import TYPES from './types'
 import { Context } from './context'
 import { todolistReducer, donelistReducer, todoFlagsReducer } from './reducers'
 
+import {
+    initTodo, initDone, initTodoFlags,
+    addItemToTodo, addItemToDone, reAddItemToTodo,
+    delItemFromTodo, delItemFromDone,
+    updateTodoFlags, updateTodo, clearAll,
+} from './actions'
+
 interface defaultData {
     todolist: string[]
     donelist: string[]
@@ -14,6 +21,13 @@ const defaultData: defaultData = {
     todolist: [],
     donelist: [],
     todoFlags: []
+}
+
+const actionCreaters = {
+    initTodo, initDone, initTodoFlags,
+    addItemToTodo, addItemToDone, reAddItemToTodo,
+    delItemFromTodo, delItemFromDone,
+    updateTodoFlags, updateTodo, clearAll,
 }
 
 export {
@@ -27,5 +41,7 @@ export {
 
     todolistReducer,
     donelistReducer,
-    todoFlagsReducer
+    todoFlagsReducer,
+
+    actionCreaters
 }

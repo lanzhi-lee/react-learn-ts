@@ -1,17 +1,10 @@
-import React, { useContext } from 'react'
-import { Context, TYPES } from '../hooks'
-import IContext from '../types/IContext'
+import React from 'react'
 interface IProps {
     clearAll: () => void
 }
 
-const Footer: React.FC = props => {
-    const { dispatchTodolist, dispatchDonelist } = (useContext(Context) as IContext).dispatch
-
-    const clearAll = () => {
-        dispatchTodolist({ type: TYPES.CLEARALL, data: {} })
-        dispatchDonelist({ type: TYPES.CLEARALL, data: {} })
-    }
+const Footer: React.FC<IProps> = props => {
+    const clearAll = () => { props.clearAll() }
 
     return (
         < footer >
