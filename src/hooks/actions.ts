@@ -1,4 +1,4 @@
-import TYPES from './types'
+import TYPES from './action-type'
 
 export const initTodo = (list: string[]) => ({ type: TYPES.INIT_TODO, data: list })
 export const initDone = (list: string[]) => ({ type: TYPES.INIT_DONE, data: list })

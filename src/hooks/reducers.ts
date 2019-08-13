@@ -1,29 +1,29 @@
-import TYPES from './types'
+import TYPES from './action-type'
 
 function todolistReducer(state: string[], action: { type: TYPES, data: any }) {
     switch (action.type) {
         case TYPES.INIT_TODO: {
-            console.log(TYPES.INIT_TODO)
+            // console.log(TYPES.INIT_TODO)
             return action.data
         }
         case TYPES.ADD_ITEM_TO_TODO: {
-            console.log(TYPES.ADD_ITEM_TO_TODO)
+            // console.log(TYPES.ADD_ITEM_TO_TODO)
             return [action.data, ...state]
         }
         case TYPES.ADD_ITEM_TO_TODO_FROM_DONE: {
-            console.log(TYPES.ADD_ITEM_TO_TODO_FROM_DONE)
+            // console.log(TYPES.ADD_ITEM_TO_TODO_FROM_DONE)
             return [...state, action.data]
         }
         case TYPES.DEL_ITEM_FROM_TODO: {
-            console.log(TYPES.DEL_ITEM_FROM_TODO)
+            // console.log(TYPES.DEL_ITEM_FROM_TODO)
             return state.filter((item, index) => index !== action.data)
         }
         case TYPES.UPDATE_TODO: {
-            console.log(TYPES.UPDATE_TODO)
+            // console.log(TYPES.UPDATE_TODO)
             return action.data
         }
         case TYPES.CLEARALL: {
-            console.log(TYPES.CLEARALL)
+            // console.log(TYPES.CLEARALL)
             return []
         }
         default: return state
@@ -42,6 +42,7 @@ function donelistReducer(state: string[], action: { type: any, data: any }) {
             return state.filter((item, index) => index !== action.data)
         }
         case TYPES.CLEARALL: {
+            // console.log(TYPES.CLEARALL)
             return []
         }
         default: return state

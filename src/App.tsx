@@ -1,41 +1,29 @@
 import React, { useReducer } from 'react';
-// eslint-disable-next-line
-import { Context, actionCreaters, todolistReducer, donelistReducer, todoFlagsReducer, defaultData, TYPES } from './hooks'
+import { Context, reducers, defaultData, actionCreaters } from './hooks'
 
-
-// import Header from './components/header'
 import Header from './containers/header'
-// import List from './components/list'
 import List from './containers/list'
-// import Footer from './components/footer'
 import Footer from './containers/footer';
 
 const App: React.FC = () => {
+    const [data, dispatch] = useReducer(reducers, defaultData)
 
-    const [todolist, dispatchTodolist] = useReducer(todolistReducer, defaultData.todolist)
-    const [donelist, dispatchDonelist] = useReducer(donelistReducer, defaultData.donelist)
-    const [todoFlags, dispatchTodoFlags] = useReducer(todoFlagsReducer, defaultData.todoFlags)
+    const initTodo = (list: string[]) => dispatch(actionCreaters.initTodo(list))
+    const initDone = (list: string[]) => dispatch(actionCreaters.initDone(list))
+    const initTodoFlags = (list: boolean[]) => dispatch(actionCreaters.initTodoFlags(list))
 
-    const initTodo = (list: string[]) => dispatchTodolist(actionCreaters.initTodo(list))
-    const initDone = (list: string[]) => dispatchDonelist(actionCreaters.initDone(list))
-    const initTodoFlags = (list: boolean[]) => dispatchTodoFlags(actionCreaters.initTodoFlags(list))
+    const addItemToTodo = (item: string) => dispatch(actionCreaters.addItemToTodo(item))
+    const addItemToDone = (item: string) => dispatch(actionCreaters.addItemToDone(item))
+    const reAddItemToTodo = (item: string) => dispatch(actionCreaters.reAddItemToTodo(item))
 
-    const addItemToTodo = (item: string) => dispatchTodolist(actionCreaters.addItemToTodo(item))
-    const addItemToDone = (item: string) => dispatchDonelist(actionCreaters.addItemToDone(item))
-    const reAddItemToTodo = (item: string) => dispatchTodolist(actionCreaters.reAddItemToTodo(item))
+    const delItemFromTodo = (index: number) => dispatch(actionCreaters.delItemFromTodo(index))
+    const delItemFromDone = (index: number) => dispatch(actionCreaters.delItemFromDone(index))
 
-    const delItemFromTodo = (index: number) => dispatchTodolist(actionCreaters.delItemFromTodo(index))
-    const delItemFromDone = (index: number) => dispatchDonelist(actionCreaters.delItemFromDone(index))
+    const updateTodo = (arr: string[]) => dispatch(actionCreaters.updateTodo(arr))
+    const updateTodoFlags = (arr: boolean[]) => dispatch(actionCreaters.updateTodoFlags(arr))
 
-    const updateTodo = (arr: string[]) => dispatchTodolist(actionCreaters.updateTodo(arr))
-    const updateTodoFlags = (arr: boolean[]) => dispatchTodoFlags(actionCreaters.updateTodoFlags(arr))
-
-    const clearAll = () => {
-        let { clearAll } = actionCreaters
-
-        dispatchTodolist(clearAll())
-        dispatchDonelist(clearAll())
-    }
+    // 原本需要dispatch两次，分别更改todo和done，合并后仅需dispatch一次
+    const clearAll = () => dispatch(actionCreaters.clearAll())
 
     const actions = {
         initTodo, initDone, initTodoFlags,
@@ -43,15 +31,9 @@ const App: React.FC = () => {
         delItemFromTodo, delItemFromDone,
         updateTodoFlags, updateTodo, clearAll,
     }
+
     return (
-        <Context.Provider value={
-            {
-                // data, dispatch
-                data: { todolist, donelist, todoFlags },
-                dispatch: { dispatchTodolist, dispatchDonelist, dispatchTodoFlags },
-                actions
-            }
-        }>
+        <Context.Provider value={{ data, actions }}>
             <div className="App">
                 <Header />
                 <List />
