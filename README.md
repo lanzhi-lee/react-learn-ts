@@ -1,5 +1,23 @@
 # Todo List
 
+线上地址：[todolist.leezx.cn](http://todolist.leezx.cn/)
+
+### Todos
+
+1. 事项排序
+2. ......
+
+### 基本使用
+
+```bash
+
+npm install     # 安装依赖
+
+npm start       # 开发环境
+
+npm run build   # 生产环境
+```
+
 ### 主要功能点
 
 ##### 1. 新增事项
@@ -29,22 +47,6 @@
 ##### 7. 二次编辑事项
 
 ![7-reedit-item.gif](https://pics.leezx.cn/todolist/7-reedit-item.gif)
-
-### todos
-
-1. 事项排序
-2. ......
-
-### 基本使用
-
-```bash
-
-npm install     # 安装依赖
-
-npm start       # 开发环境
-
-npm run build   # 生产环境
-```
 
 ### 更多
 
